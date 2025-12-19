@@ -2,16 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Flashcards Betis – Respuesta escrita</title>
+<title>Quiz NASA y Espacio</title>
 <style>
 :root {
---verde-betis: #0b8f3b;
---verde-oscuro: #066027;
---dorado: #f0c75e;
---blanco: #ffffff;
---gris-fondo: #0b1a12;
---gris-claro: #d9e2dd;
---sombra: 0 18px 35px rgba(0, 0, 0, 0.45);
+--fondo-espacio: radial-gradient(circle at top, #1a2a6c 0, #000428 40%, #000000 100%);
+--azul-neon: #00d4ff;
+--morado-neon: #b621fe;
+--texto-claro: #e4f1ff;
+--sombra: 0 18px 35px rgba(0, 0, 0, 0.6);
 --radio: 18px;
 --duracion: 0.3s;
 }
@@ -22,8 +20,8 @@ padding: 0;
 }
 body {
 font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-background: radial-gradient(circle at top, #124528 0, #020a04 55%, #000000 100%);
-color: var(--gris-claro);
+background: var(--fondo-espacio);
+color: var(--texto-claro);
 min-height: 100vh;
 display: flex;
 flex-direction: column;
@@ -32,35 +30,64 @@ padding: 32px 16px;
 }
 h1 {
 text-align: center;
-margin-bottom: 8px;
-font-size: 1.8rem;
-letter-spacing: 0.06em;
-color: var(--dorado);
-text-shadow: 0 0 12px rgba(0,0,0,0.8);
+margin-bottom: 4px;
+font-size: 1.9rem;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+background: linear-gradient(90deg, #00d4ff, #b621fe);
+-webkit-background-clip: text;
+color: transparent;
 }
 p.subtitulo {
-margin-bottom: 24px;
-color: #c6d2cc;
+margin-bottom: 18px;
 font-size: 0.95rem;
 text-align: center;
+opacity: 0.8;
+}
+.score-panel {
+display: flex;
+gap: 16px;
+margin-bottom: 20px;
+padding: 10px 14px;
+border-radius: 999px;
+background: rgba(5, 10, 30, 0.9);
+box-shadow: var(--sombra);
+font-size: 0.9rem;
+}
+.score-panel span {
+font-weight: 600;
 }
 .grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 gap: 18px;
 width: 100%;
-max-width: 900px;
+max-width: 950px;
 }
 .card {
-background: linear-gradient(145deg, rgba(2, 20, 9, 0.98), rgba(3, 36, 15, 0.98));
+background: radial-gradient(circle at top, rgba(41, 98, 255, 0.25), rgba(2, 6, 23, 0.96));
 border-radius: var(--radio);
-border: 1px solid rgba(240, 199, 94, 0.35);
+border: 1px solid rgba(0, 212, 255, 0.35);
 box-shadow: var(--sombra);
 padding: 18px 16px 20px;
 display: flex;
 flex-direction: column;
 gap: 10px;
 justify-content: space-between;
+position: relative;
+overflow: hidden;
+}
+.card::before {
+content: "";
+position: absolute;
+width: 120px;
+height: 120px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(182, 33, 254, 0.6), transparent 60%);
+top: -40px;
+right: -40px;
+opacity: 0.3;
+pointer-events: none;
 }
 .enunciado {
 font-weight: 600;
@@ -70,15 +97,15 @@ margin-bottom: 4px;
 .input-respuesta {
 padding: 8px 10px;
 border-radius: 10px;
-border: 1px solid rgba(217, 226, 221, 0.3);
-background: rgba(4, 20, 10, 0.9);
-color: var(--gris-claro);
+border: 1px solid rgba(228, 241, 255, 0.35);
+background: rgba(3, 7, 24, 0.9);
+color: var(--texto-claro);
 outline: none;
 font-size: 0.95rem;
 }
 .input-respuesta:focus {
-border-color: var(--dorado);
-box-shadow: 0 0 0 1px rgba(240, 199, 94, 0.5);
+border-color: var(--azul-neon);
+box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.5);
 }
 .btn-comprobar {
 align-self: flex-start;
@@ -87,17 +114,21 @@ padding: 6px 12px;
 border-radius: 999px;
 border: none;
 cursor: pointer;
-background: var(--verde-betis);
-color: var(--blanco);
+background: linear-gradient(90deg, #00d4ff, #b621fe);
+color: #ffffff;
 font-size: 0.85rem;
 font-weight: 600;
 letter-spacing: 0.03em;
 text-transform: uppercase;
-transition: background var(--duracion) ease, transform var(--duracion) ease;
+transition: transform var(--duracion) ease, opacity var(--duracion) ease;
 }
 .btn-comprobar:hover {
-background: var(--verde-oscuro);
 transform: translateY(-1px);
+opacity: 0.9;
+}
+.btn-comprobar:disabled {
+opacity: 0.4;
+cursor: default;
 }
 .feedback {
 font-size: 0.85rem;
@@ -112,148 +143,89 @@ color: #ff9b7f;
 </style>
 </head>
 <body>
-<h1>Quiz Betis – Respuesta escrita</h1>
-<p class="subtitulo">Escribe tu respuesta y pulsa “Comprobar”. No hace falta que sea perfecta, es para aprender.</p>
+<h1>Quiz NASA & Espacio</h1>
+<p class="subtitulo">Escribe tu respuesta, comprueba y ve sumando puntos. 1 punto por cada respuesta correcta.</p>
 
-<div class="card" data-respuesta-correcta="1907">
-<div class="enunciado">¿En qué año se fundó el Real Betis Balompié?</div>
+<div class="score-panel">
+<div>Puntuación: <span id="score">0</span></div>
+<div>Respondidas: <span id="answered">0</span>/<span id="total">0</span></div>
+</div>
+
+<div class="grid">
+<!-- 10 preguntas de ejemplo, luego puedes añadir más siguiendo el mismo formato -->
+
+<div class="card" data-respuestas="nasa">
+<div class="enunciado">¿Qué significan las siglas NASA?</div>
+<input class="input-respuesta" type="text" placeholder="Escribe el nombre en inglés o NASA">
+<button class="btn-comprobar">Comprobar</button>
+<div class="feedback"></div>
+</div>
+
+<div class="card" data-respuestas="1969">
+<div class="enunciado">¿En qué año pisó el ser humano la Luna por primera vez?</div>
 <input class="input-respuesta" type="text" placeholder="Escribe un año">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Sevilla">
-<div class="enunciado">¿En qué ciudad se fundó el Real Betis Balompié?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe la ciudad">
+<div class="card" data-respuestas="apollo 11, apolo 11">
+<div class="enunciado">¿Cómo se llamaba la misión que llevó por primera vez humanos a la superficie lunar?</div>
+<input class="input-respuesta" type="text" placeholder="Nombre de la misión">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Sevilla Balompié">
-<div class="enunciado">¿Cuál fue el primer nombre del club antes de llamarse Real Betis Balompié?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe el nombre antiguo">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="Betis">
-<div class="enunciado">¿Qué significa la palabra “Betis” en relación con el nombre del club?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe la explicación breve">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="1934-35">
-<div class="enunciado">¿En qué temporada ganó el Betis su primera Liga?</div>
-<input class="input-respuesta" type="text" placeholder="Ejemplo: 1934-35">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="1977, 2005 y 2022">
-<div class="enunciado">¿En qué años ganó el Betis la Copa del Rey?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe los años separados por comas">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="Heliópolis">
-<div class="enunciado">¿Cómo se llamaba históricamente el estadio del Betis antes de llamarse Benito Villamarín?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe el nombre principal">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="1929">
-<div class="enunciado">¿En qué año se inauguró el estadio en su ubicación actual?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe un año">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="verde y blanco">
-<div class="enunciado">¿Qué colores identifican al Real Betis Balompié?</div>
-<input class="input-respuesta" type="text" placeholder="Ejemplo: verde y blanco">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="Joaquín">
-<div class="enunciado">Nombra al gran capitán bético, muy querido por su carisma y sentido del humor.</div>
-<input class="input-respuesta" type="text" placeholder="Escribe el nombre de pila">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="17">
-<div class="enunciado">¿Qué dorsal ha sido especialmente icónico en la historia reciente del Betis por Joaquín?</div>
-<input class="input-respuesta" type="text" placeholder="Escribe un número de dorsal">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
-
-<div class="card" data-respuesta-correcta="Manuel Pellegrini">
-<div class="enunciado">¿Qué entrenador chileno llevó al Betis a ganar la Copa del Rey de 2022?</div>
+<div class="card" data-respuestas="neil armstrong">
+<div class="enunciado">¿Quién fue la primera persona en caminar sobre la Luna?</div>
 <input class="input-respuesta" type="text" placeholder="Nombre y apellido">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Sevilla FC">
-<div class="enunciado">¿Cuál es el gran rival del Betis en el derbi sevillano?</div>
-<input class="input-respuesta" type="text" placeholder="Nombre del club rival">
+<div class="card" data-respuestas="kennedy space center, cabo cañaveral">
+<div class="enunciado">¿Desde qué lugar de lanzamiento en Florida despegan muchas misiones de la NASA?</div>
+<input class="input-respuesta" type="text" placeholder="Nombre del centro o zona">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="béticos">
-<div class="enunciado">¿Cómo se conoce popularmente a la afición del Real Betis Balompié?</div>
-<input class="input-respuesta" type="text" placeholder="Nombre de la afición">
+<div class="card" data-respuestas="iss, estacion espacial internacional, estación espacial internacional">
+<div class="enunciado">¿Cómo se llama la estación espacial en la que conviven astronautas de varios países?</div>
+<input class="input-respuesta" type="text" placeholder="Nombre o siglas">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="manque pierda">
-<div class="enunciado">Completa la frase: “¡Viva el Betis ...!”</div>
-<input class="input-respuesta" type="text" placeholder="Completa la expresión">
+<div class="card" data-respuestas="hubble, telescopio espacial hubble">
+<div class="enunciado">¿Cómo se llama el famoso telescopio espacial que ha tomado imágenes icónicas del universo?</div>
+<input class="input-respuesta" type="text" placeholder="Nombre del telescopio">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Europa League">
-<div class="enunciado">¿Qué competición europea ha disputado con frecuencia el Betis en los últimos años?</div>
-<input class="input-respuesta" type="text" placeholder="Nombre de la competición">
+<div class="card" data-respuestas="marte">
+<div class="enunciado">¿A qué planeta envió la NASA los rovers Spirit, Opportunity y Curiosity?</div>
+<input class="input-respuesta" type="text" placeholder="Nombre del planeta">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Denílson">
-<div class="enunciado">¿Qué extremo brasileño fichó el Betis a finales de los 90 por una cifra récord en su época?</div>
-<input class="input-respuesta" type="text" placeholder="Nombre del jugador">
+<div class="card" data-respuestas="sistema solar">
+<div class="enunciado">¿Cómo se llama el conjunto formado por el Sol y los cuerpos celestes que lo orbitan?</div>
+<input class="input-respuesta" type="text" placeholder="Dos palabras">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Esnaola">
-<div class="enunciado">¿Qué mítico portero del Betis es recordado por su actuación en la final de Copa de 1977?</div>
-<input class="input-respuesta" type="text" placeholder="Apellidos del portero">
+<div class="card" data-respuestas="via lactea, vía láctea">
+<div class="enunciado">¿Cómo se llama la galaxia en la que se encuentra nuestro Sistema Solar?</div>
+<input class="input-respuesta" type="text" placeholder="Nombre de la galaxia">
 <button class="btn-comprobar">Comprobar</button>
 <div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="Copa del Rey de 2005">
-<div class="enunciado">¿Qué título ganó el Betis en la final disputada en el Vicente Calderón en 2005?</div>
-<input class="input-respuesta" type="text" placeholder="Nombre del título y año">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
 </div>
 
-<div class="card" data-respuesta-correcta="eurobetis">
-<div class="enunciado">¿Cómo se llama popularmente al Betis cuando se clasifica y compite bien en Europa?</div>
-<input class="input-respuesta" type="text" placeholder="Nombre popular">
-<button class="btn-comprobar">Comprobar</button>
-<div class="feedback"></div>
-</div>
 <script>
 function normalizarTexto(texto) {
 return texto
@@ -263,34 +235,66 @@ return texto
 .trim();
 }
 
-document.querySelectorAll('.card').forEach(card => {
-const input = card.querySelector('.input-respuesta');
-const boton = card.querySelector('.btn-comprobar');
-const feedback = card.querySelector('.feedback');
-const correcta = normalizarTexto(card.dataset.respuestaCorrecta);
+let score = 0;
+let answered = 0;
+
+const cards = document.querySelectorAll(".card");
+const scoreSpan = document.getElementById("score");
+const answeredSpan = document.getElementById("answered");
+const totalSpan = document.getElementById("total");
+
+totalSpan.textContent = cards.length;
+
+cards.forEach(card => {
+const input = card.querySelector(".input-respuesta");
+const boton = card.querySelector(".btn-comprobar");
+const feedback = card.querySelector(".feedback");
+
+const posibles = card.dataset.respuestas
+.split(",")
+.map(r => normalizarTexto(r));
+
+let yaComprobada = false;
 
 function comprobar() {
+if (yaComprobada) return;
+
 const usuario = normalizarTexto(input.value);
 if (!usuario) {
-feedback.textContent = "Escribe algo antes de comprobar 😉";
+feedback.textContent = "Escribe algo antes de comprobar 🚀";
 feedback.className = "feedback incorrecto";
 return;
 }
 
-if (usuario === correcta) {
+const esCorrecta = posibles.includes(usuario);
+
+if (esCorrecta) {
+score++;
 feedback.textContent = "¡Correcto! ✅";
 feedback.className = "feedback correcto";
 } else {
-feedback.textContent = "No es del todo correcto. Respuesta esperada: " + card.dataset.respuestaCorrecta;
+feedback.textContent = "No es del todo correcto. Algunas respuestas válidas serían: " + card.dataset.respuestas;
 feedback.className = "feedback incorrecto";
 }
+
+yaComprobada = true;
+answered++;
+scoreSpan.textContent = score;
+answeredSpan.textContent = answered;
+boton.disabled = true;
+input.disabled = true;
 }
 
-boton.addEventListener('click', comprobar);
-input.addEventListener('keydown', (e) => {
-if (e.key === 'Enter') comprobar();
+boton.addEventListener("click", comprobar);
+input.addEventListener("keydown", e => {
+if (e.key === "Enter") comprobar();
 });
 });
 </script>
 </body>
 </html>
+
+
+
+
+
